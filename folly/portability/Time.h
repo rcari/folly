@@ -21,16 +21,7 @@
 
 #include <folly/portability/Config.h>
 
-// OSX is a pain. The XCode 8 SDK always declares clock_gettime
-// even if the target OS version doesn't support it, so you get
-// an error at runtime because it can't resolve the symbol. We
-// solve that by pretending we have it here in the header and
-// then enable our implementation on the source side so that
-// gets linked in instead.
-#if __MACH__ &&                                                       \
-        ((!defined(TARGET_OS_OSX) || TARGET_OS_OSX) &&                \
-         (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_12)) || \
-    (TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0))
+#if defined(__MACH__) && defined(__CLOCK_AVAILABILITY)
 
 #ifdef FOLLY_HAVE_CLOCK_GETTIME
 #undef FOLLY_HAVE_CLOCK_GETTIME
